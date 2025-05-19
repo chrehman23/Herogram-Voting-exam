@@ -17,8 +17,7 @@ function App() {
     };
   }, []);
 
-  const updateUsers = async (pollEvent) => {
-    console.log("pollEvent", pollEvent)
+  const updateUsers = async (pollEvent) => { 
     setUsers(pollEvent?.activeUsers || 0);
   };
   return (

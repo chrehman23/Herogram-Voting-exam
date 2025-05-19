@@ -52,8 +52,7 @@ const VoteCard = ({
 
   const handleVoteEvent = (pollEvent) => {
     if (pollEvent?.id == id) {
-      const userId = Cookies.get("userId");
-      console.log(" stateRef.current", stateRef.current)
+      const userId = Cookies.get("userId"); 
       pollEvent.votedIndex = pollEvent?.userId == userId ? pollEvent.votedIndex : stateRef?.current?.votedIndex;
       setData(pollEvent);
       if (pollEvent?.userId !== userId) {

@@ -352,11 +352,9 @@ io.on('connection', (socket) => {
     console.log("New user connected:", socket.id);
     activeUsers++
     io.emit("USER_LIST", { activeUsers })
-    console.log("activeUsers", activeUsers)
     socket.on('disconnect', () => {
         activeUsers--
         console.log("User disconnected:", socket.id);
-        console.log("activeUsers", activeUsers)
         io.emit("USER_LIST", { activeUsers })
     });
 });
