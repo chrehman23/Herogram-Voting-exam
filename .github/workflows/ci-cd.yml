@@ -1,0 +1,98 @@
+name: CI/CD for Frontend and Backend
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Frontend Workflow
+  frontend:
+    name: Frontend CI/CD
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend
+          npm test
+
+      - name: Deploy Frontend
+        if: github.ref == 'refs/heads/main'
+        run: echo "Deploying Frontend"
+
+  # Backend Workflow
+  backend:
+    name: Backend CI/CD
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U testuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Wait for Database Services
+        run: |
+          echo "Waiting for PostgreSQL and Redis to be ready..."
+          sleep 20
+
+      - name: Install Dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Run Backend Tests
+        env:
+          DATABASE_URL: postgres://postgres:1234@localhost:5432/postgres
+          REDIS_URL: redis://redis:6379
+        run: |
+          cd backend
+          npm test
+
+      - name: Deploy Backend
+        if: github.ref == 'refs/heads/main'
+        run: echo "Deploying Backend"
