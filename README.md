@@ -17,8 +17,8 @@ Make sure you have the following installed:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/node-postgres-app.git
-   cd node-postgres-app
+   git clone https://github.com/chrehman23/Herogram-Voting-exam.git
+   cd Herogram-Voting-exam
    docker-compose up --build
  
 Open your browser and navigate to: http://localhost:3000
